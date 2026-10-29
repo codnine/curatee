@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CURATE by JACK it</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0a0a0a;--silver:#c9c9c6;--mute:#8d8d8a;--line:#3a3a38;--neon:#e4ff1a;color-scheme:dark;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html{scroll-padding-top:70px}
+body{margin:0;background:var(--ink);color:var(--silver);font:300 16px/1.6 Inter,system-ui,sans-serif;min-height:100vh}
+.d{font-family:Anton,Impact,"Arial Narrow",sans-serif;font-weight:400;text-transform:uppercase;line-height:.92;letter-spacing:.005em;margin:0}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer}
+nav{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:14px 5vw;background:rgba(10,10,10,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.logo{font-size:26px;letter-spacing:.08em}
+.logo small{font:400 10px Inter,sans-serif;letter-spacing:.22em;color:var(--mute);margin-left:10px}
+#menu{display:none;gap:24px;font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+#menu.on{display:flex}
+#menu a:hover,#menu a.cur{color:var(--neon)}
+@media(max-width:700px){#menu{gap:11px;font-size:10px;letter-spacing:.08em}.logo small{display:none}}
+.view{display:none;padding:0 5vw 10vh}
+.view.on{display:block}
+#home{min-height:calc(100vh - 60px);display:none;flex-direction:column;padding-bottom:calc(5vh + env(safe-area-inset-bottom,0px))}
+#home.on{display:flex}
+.top{display:flex;justify-content:space-between;padding:14px 0;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);border-bottom:1px solid var(--line)}
+.greet{font-size:clamp(64px,17vw,230px);margin:3vh 0 2vh;cursor:pointer;display:block;width:fit-content;max-width:100%}
+.greet .hl{transition:color .15s}
+.greet:hover .hl,.greet:focus-visible .hl,.greet:active .hl{color:var(--neon)}
+.sub{max-width:520px;color:var(--mute);margin:0 0 3vh}
+#log{flex:1;display:flex;flex-direction:column;gap:12px;margin-bottom:18px;max-width:720px}
+.m{padding:12px 16px;border:1px solid var(--line);width:fit-content;max-width:92%;white-space:pre-wrap}
+.m.u{align-self:flex-end;background:#1a1a19}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;white-space:normal}
+.chips a{border:1px solid var(--silver);padding:7px 14px;font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+.chips a:hover{background:var(--neon);border-color:var(--neon);color:var(--ink)}
+#cf{display:flex;border:1px solid var(--silver);max-width:720px;width:100%}
+#cf input{flex:1;background:transparent;border:0;color:var(--silver);padding:18px;font:inherit;outline:0;min-width:0}
+#cf:focus-within{border-color:var(--neon)}
+#cf button{background:var(--silver);color:var(--ink);border:0;padding:0 22px;font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+#cf button:hover:not(:disabled){background:var(--neon)}
+#cf button:disabled{opacity:.5}
+.big{font-size:clamp(60px,14vw,190px);padding:6vh 0 4vh}
+.lead{max-width:560px;color:var(--mute);margin:0 0 6vh}
+.row{display:grid;grid-template-columns:90px 1fr 1.3fr;gap:20px;padding:28px 0;border-top:1px solid var(--line);align-items:start}
+.row:last-of-type{border-bottom:1px solid var(--line)}
+.row .n{font-size:14px;letter-spacing:.2em;color:var(--mute);padding-top:10px}
+.row h3{font-size:clamp(34px,6vw,72px);transition:color .15s}
+.row:hover h3{color:var(--neon)}
+.row p{margin:0 0 10px;color:var(--mute)}
+.row ul{margin:0;padding-left:18px;color:var(--mute);font-size:14.5px}
+@media(max-width:700px){.row{grid-template-columns:1fr}.row .n{padding:0}}
+.art{padding:30px 0;border-top:1px solid var(--line)}
+.art span{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--mute)}
+.art h3{font-size:clamp(30px,5vw,56px);margin:10px 0;transition:color .15s}
+.art:hover h3{color:var(--neon)}
+.art p{margin:0;max-width:560px;color:var(--mute)}
+form.f{max-width:560px;display:grid;gap:16px}
+label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+input,select{width:100%;margin-top:6px;padding:14px;background:transparent;border:1px solid var(--line);color:var(--silver);font:inherit;border-radius:0}
+input:focus,select:focus{outline:0;border-color:var(--neon)}
+select option{background:#111}
+.btn{display:inline-block;background:var(--silver);color:var(--ink);border:0;padding:16px 28px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;width:fit-content}
+.btn:hover{background:var(--neon)}
+.cal{max-width:560px}
+.ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.ch .d{font-size:34px}
+.ch button{background:none;border:1px solid var(--line);width:42px;height:42px;font-size:18px}
+.ch button:hover:not(:disabled){border-color:var(--neon);color:var(--neon)}
+.ch button:disabled{opacity:.25}
+.g{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.dow{font-size:10px;letter-spacing:.14em;color:var(--mute);text-align:center;padding:6px 0}
+.day{aspect-ratio:1;background:none;border:1px solid var(--line);font-size:14px}
+.day:hover:not(:disabled){border-color:var(--neon)}
+.day:disabled{opacity:.22;cursor:default}
+.day.sel,.slot.sel{background:var(--neon);border-color:var(--neon);color:var(--ink)}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin:14px 0 22px}
+.slot{background:none;border:1px solid var(--silver);padding:12px;font-size:13px;letter-spacing:.1em}
+.slot:hover:not(:disabled){border-color:var(--neon);color:var(--neon)}
+.slot:disabled{opacity:.25;text-decoration:line-through;cursor:default}
+.tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin:20px 0 4px}
+.ok{display:none;border:1px solid var(--neon);padding:22px;max-width:560px;margin-top:20px}
+.ok .d{font-size:30px;color:var(--neon)}
+.note{font-size:12.5px;color:var(--mute);margin:10px 0 0}
+.req{border-top:1px solid var(--line);padding:16px 0;max-width:640px}
+.req b{font-weight:500;color:var(--silver)}
+footer{padding:30px 5vw calc(30px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--mute)}
+footer button,footer a{background:none;border:0;padding:0;text-decoration:underline;color:var(--mute);margin-left:14px}
+#ck{position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));max-width:520px;z-index:50;background:#141413;border:1px solid var(--silver);padding:20px;display:none}
+#ck p{margin:0 0 14px;font-size:14px}
+#ck button{padding:10px 18px;margin-right:8px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;border:1px solid var(--silver);background:transparent}
+#ck .fill{background:var(--silver);color:var(--ink)}
+#ck button:hover{background:var(--neon);border-color:var(--neon);color:var(--ink)}
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo d" href="#">CURATE<small>BY JACK IT</small></a>
+  <div id="menu"><a href="#brand">Brand</a><a href="#events">Events</a><a href="#pr">PR</a><a href="#journal">Journal</a><a href="#book">Book</a></div>
+</nav>
+
+<main>
+<section class="view on" id="home">
+  <div class="top"><span>Brand · Events · PR</span><span>Sri Lanka</span></div>
+  <a class="greet d" id="gr" tabindex="0" role="button" aria-label="Let’s curate it">Let’s<br><span class="hl">curate it.</span></a>
+  <p class="sub">Tell me about your business or your event, in your own words. I’ll tell you what you’ll need.</p>
+  <div id="log" aria-live="polite"></div>
+  <form id="cf" autocomplete="off"><input id="ci" placeholder="I run a small bakery and nobody finds us online…" aria-label="Message"><button type="submit" id="cb">Send</button></form>
+</section>
+
+<section class="view" id="brand">
+  <h1 class="big d">Brand</h1>
+  <p class="lead">Brand marketing and management for people who are great at what they do and don’t have time for the tech.</p>
+  <div class="row"><div class="n">01</div><h3 class="d">Starter</h3><div><p>Free. Register with your phone number and sign in. Your package arrives within one week.</p><ul><li>Social profiles set up</li><li>Light rebrand</li><li>We filter the noise to what you actually want</li></ul></div></div>
+  <div class="row"><div class="n">02</div><h3 class="d">Basic</h3><div><p>Everything in Starter, with a team that stays with you.</p><ul><li>Regular follow-ups</li><li>Ad campaign support</li></ul></div></div>
+  <div class="row"><div class="n">03</div><h3 class="d">Premium</h3><div><p>Our everything. Built for businesses just starting out.</p><ul><li>Full rebranding proposal</li><li>Complete brand management</li></ul></div></div>
+  <a class="btn" href="#join" style="margin-top:30px">Start free</a>
+</section>
+
+<section class="view" id="events">
+  <h1 class="big d">Events</h1>
+  <p class="lead">Beautiful events at fair prices. Not a luxury, just done properly.</p>
+  <div class="row"><div class="n">01</div><h3 class="d">Intimate</h3><div><p>Birthdays, get-togethers and small celebrations.</p></div></div>
+  <div class="row"><div class="n">02</div><h3 class="d">Milestone</h3><div><p>Graduations, parties and the moments you only get once.</p></div></div>
+  <div class="row"><div class="n">03</div><h3 class="d">Grand</h3><div><p>Weddings and large events: design, vendors and day-of coordination.</p></div></div>
+  <a class="btn" href="#book" style="margin-top:30px">Book a call</a>
+</section>
+
+<section class="view" id="pr">
+  <h1 class="big d">PR</h1>
+  <p class="lead">For established offices and companies: a consistently positive public image.</p>
+  <div class="row"><div class="n">01</div><h3 class="d">Image</h3><div><p>Positioning, messaging and media readiness.</p></div></div>
+  <div class="row"><div class="n">02</div><h3 class="d">Corporate events</h3><div><p>Launches, townhalls and milestones designed to earn coverage.</p></div></div>
+  <a class="btn" href="#book" style="margin-top:30px">Book a call</a>
+</section>
+
+<section class="view" id="journal">
+  <h1 class="big d">Journal</h1>
+  <article class="art"><span>Branding · 4 min</span><h3 class="d">Why your best customers can’t find you</h3><p>Great work is invisible without a consistent face online. Here is where to start.</p></article>
+  <article class="art"><span>Events · 5 min</span><h3 class="d">A great event on a fair budget</h3><p>Where the money matters, and where it doesn’t.</p></article>
+  <article class="art"><span>PR · 3 min</span><h3 class="d">One event, a month of content</h3><p>How to turn a single day into stories that keep working.</p></article>
+</section>
+
+<section class="view" id="join">
+  <h1 class="big d">Start free</h1>
+  <p class="lead">Request your free Starter package. We deliver within one week.</p>
+  <form class="f" id="jf">
+    <label>Name<input required name="name" autocomplete="name"></label>
+    <label>Phone number<input required type="tel" name="phone" autocomplete="tel" placeholder="+94 …"></label>
+    <label>Business name<input required name="business"></label>
+    <button class="btn" type="submit">Send request</button>
+  </form>
+  <div class="ok" id="jok"><span class="d">Request received</span><p style="margin:10px 0 0">We’ll be in touch within the week.</p><p class="note" id="jn"></p></div>
+</section>
+
+<section class="view" id="book">
+  <h1 class="big d">Book</h1>
+  <p class="lead">Pick a day and a time for a 30-minute call. All times are Sri Lanka time, Monday to Saturday.</p>
+  <div class="cal">
+    <div class="ch"><button id="pv" aria-label="Previous month">‹</button><span class="d" id="mt"></span><button id="nx" aria-label="Next month">›</button></div>
+    <div class="g" id="dw"></div><div class="g" id="dg"></div>
+    <div class="tag" id="st" style="display:none"></div>
+    <div class="slots" id="sl"></div>
+    <form class="f" id="bf" style="display:none">
+      <label>Name<input required name="name" autocomplete="name"></label>
+      <label>Phone number<input required type="tel" name="phone" autocomplete="tel" placeholder="+94 …"></label>
+      <label>What would you like to talk about?<input name="topic" id="tp"></label>
+      <button class="btn" type="submit">Confirm booking</button>
+    </form>
+  </div>
+  <div class="ok" id="bok"><span class="d">You’re booked</span><p style="margin:10px 0 0" id="bt"></p><p class="note" id="bn"></p></div>
+</section>
+
+<section class="view" id="desk">
+  <h1 class="big d">Desk</h1>
+  <p class="lead">New requests, newest first. Only you can see this page.</p>
+  <div id="rq"></div>
+</section>
+</main>
+
+<footer><span>CURATE by JACK it · Colombo</span><span><a href="#desk" id="dl" style="display:none">Desk</a><button id="cs">Cookie settings</button></span></footer>
+
+<div id="ck" role="dialog" aria-label="Cookie consent">
+  <p>We use essential cookies to make the site work. With your permission we also use analytics to see what’s useful.</p>
+  <button class="fill" id="acc">Accept all</button><button id="ess">Essential only</button>
+</div>
+
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var views=['home','brand','events','pr','journal','join','book','desk'],menu=$('menu');
+  var db=null,sample=null,firstMsg='';
+
+  function route(){
+    var h=(location.hash||'').replace('#','');if(views.indexOf(h)<0)h='home';
+    views.forEach(function(v){$(v).classList.toggle('on',v===h)});
+    Array.prototype.forEach.call(menu.children,function(a){a.classList.toggle('cur',a.getAttribute('href')==='#'+h)});
+    if(h!=='home')menu.classList.add('on');
+    if(h==='book'&&firstMsg&&!$('tp').value)$('tp').value=firstMsg.slice(0,140);
+    window.scrollTo(0,0);
+  }
+  window.addEventListener('hashchange',route);route();
+
+  /* ---------- concierge ---------- */
+  var SYS="You are the concierge for CURATE by JACK it, a Sri Lankan company that makes branding, marketing, events and PR accessible and fairly priced. "+
+  "Services: BRAND (Starter: free, phone registration and sign-in, delivered within 1 week: social profiles, light rebrand, filtering what the client actually wants. Basic: adds follow-ups and ad campaign support. Premium: full rebranding proposal and brand management, best for new businesses). "+
+  "EVENTS (packages from intimate birthdays and get-togethers to graduations, parties and weddings; fairly priced, not a luxury). PR (for established offices and companies: a positive public image and corporate events that earn coverage). JOURNAL (short articles). "+
+  "Act like a sharp, warm consultant. Listen to what the visitor actually says. Ask at most one short question, only if you truly need it. Then give a concrete recommendation in the spirit of: if you need X, you will want Y, because Z. "+
+  "Never invent prices, dates or guarantees; if asked about price, say the team confirms it after a short call. Maximum 70 words, plain text, no markdown, no emojis. Reply in the language the visitor writes in. "+
+  "When useful, end with tags on their own final line: [[go:brand]] [[go:events]] [[go:pr]] [[go:journal]] [[go:book]] (book means scheduling a call). Only use these tags.";
+  var LBL={brand:'See Brand',events:'See Events',pr:'See PR',journal:'Read journal',book:'Book a call'};
+  var hist=[],busy=false,log=$('log');
+  function bubble(t,u){var d=document.createElement('div');d.className='m'+(u?' u':'');d.textContent=t;log.appendChild(d);return d}
+  function clean(t){return t.replace(/\[\[go:[a-z]+\]\]/g,'').replace(/\[\[[^\]]*$/,'').trim()}
+  function chips(el,text){
+    var m=text.match(/\[\[go:([a-z]+)\]\]/g)||[],seen={},c=document.createElement('div');c.className='chips';
+    m.forEach(function(x){var k=x.slice(5,-2);if(LBL[k]&&!seen[k]){seen[k]=1;var a=document.createElement('a');a.href='#'+k;a.textContent=LBL[k];c.appendChild(a)}});
+    if(c.children.length)el.appendChild(c);
+  }
+  function fallback(t){
+    t=t.toLowerCase();
+    if(/event|wedding|party|birthday|graduat/.test(t))return'For events, our packages run from small get-togethers to weddings. A short call will pin down what you need. [[go:events]] [[go:book]]';
+    if(/\bpr\b|image|reputation|office|company|corporate/.test(t))return'For an established company, PR shapes your image and designs events that earn coverage. [[go:pr]] [[go:book]]';
+    return'If people can’t find your business online, you’ll want a brand foundation first. Starter is free and a good place to begin. [[go:brand]] [[go:book]]';
+  }
+  $('cf').onsubmit=async function(e){
+    e.preventDefault();if(busy)return;
+    var v=$('ci').value.trim();if(!v)return;
+    if(!firstMsg)firstMsg=v;
+    $('ci').value='';menu.classList.add('on');bubble(v,true);hist.push({role:'user',content:v});
+    busy=true;$('cb').disabled=true;
+    var el=bubble('…',false),full='';
+    try{
+      if(!sample)throw {code:'none'};
+      var msgs=hist.map(function(h,i){return i===0?{role:'user',content:SYS+'\n\nVisitor: '+h.content}:h});
+      var r=await sample(msgs,{modelTier:'default',cache:false,onText:function(u){full=u.text;el.textContent=clean(full)||'…'}});
+      full=r.text||full;
+    }catch(err){
+      full=(err&&err.code==='rate_limited')?'I’m getting a lot of messages. Give me a moment and try again.':fallback(v);
+    }
+    el.textContent=clean(full);chips(el,full);
+    hist.push({role:'assistant',content:clean(full)});
+    busy=false;$('cb').disabled=false;$('ci').focus();
+  };
+  $('gr').onclick=function(){$('ci').focus()};
+  $('gr').onkeydown=function(e){if(e.key==='Enter')$('ci').focus()};
+
+  /* ---------- calendar ---------- */
+  var TIMES=['10:00','11:00','12:00','14:00','15:00','16:00'];
+  var today=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Colombo'});
+  var tp=today.split('-').map(Number),cy=tp[0],cm=tp[1]-1,sel=null,slot=null,taken={};
+  var maxD=new Date(Date.UTC(tp[0],tp[1]-1,tp[2]+60)).toISOString().slice(0,10);
+  var p2=function(n){return(n<10?'0':'')+n};
+  var MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  ['Mo','Tu','We','Th','Fr','Sa','Su'].forEach(function(x){var s=document.createElement('div');s.className='dow';s.textContent=x;$('dw').appendChild(s)});
+  function label(k){var a=k.split('-').map(Number);return new Date(Date.UTC(a[0],a[1]-1,a[2])).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',timeZone:'UTC'})}
+  function renderCal(){
+    $('mt').textContent=MN[cm]+' '+cy;
+    $('pv').disabled=(cy===tp[0]&&cm<=tp[1]-1);
+    var g=$('dg');g.textContent='';
+    var first=(new Date(Date.UTC(cy,cm,1)).getUTCDay()+6)%7,n=new Date(Date.UTC(cy,cm+1,0)).getUTCDate();
+    for(var i=0;i<first;i++)g.appendChild(document.createElement('div'));
+    for(var d=1;d<=n;d++){
+      var k=cy+'-'+p2(cm+1)+'-'+p2(d),dow=new Date(Date.UTC(cy,cm,d)).getUTCDay();
+      var b=document.createElement('button');b.className='day'+(k===sel?' sel':'');b.textContent=d;b.type='button';
+      b.disabled=(k<=today||k>maxD||dow===0);
+      (function(k){b.onclick=function(){sel=k;slot=null;renderCal();renderSlots()}})(k);
+      g.appendChild(b);
+    }
+  }
+  function renderSlots(){
+    var box=$('sl');box.textContent='';$('bf').style.display='none';
+    if(!sel){$('st').style.display='none';return}
+    $('st').style.display='block';$('st').textContent=label(sel);
+    TIMES.forEach(function(t){
+      var key=sel+'_'+t,b=document.createElement('button');b.type='button';b.className='slot'+(slot===t?' sel':'');
+      b.textContent=t;b.disabled=!!taken[key];
+      b.onclick=function(){slot=t;renderSlots();$('bf').style.display='grid'};
+      box.appendChild(b);
+    });
+    if(slot)$('bf').style.display='grid';
+  }
+  $('pv').onclick=function(){cm--;if(cm<0){cm=11;cy--}renderCal()};
+  $('nx').onclick=function(){cm++;if(cm>11){cm=0;cy++}renderCal()};
+  renderCal();
+
+  var uid=null;
+  async function save(kind,data){
+    if(!db||!uid)return false;
+    try{
+      var ref=db.doc('requests/'+uid),s=await ref.get(),items=(s.exists&&s.data().items)||[];
+      items.push(Object.assign({type:kind,created:new Date().toISOString()},data));
+      await ref.set({items:items.slice(-30)});return true;
+    }catch(e){return false}
+  }
+  $('bf').onsubmit=async function(e){
+    e.preventDefault();var f=new FormData(this),o={};f.forEach(function(v,k){o[k]=v});
+    var key=sel+'_'+slot,saved=false;
+    if(db){
+      try{
+        var ref=db.collection('slots').doc(key),s=await ref.get();
+        if(s.exists){taken[key]=1;renderSlots();alert('That time was just taken. Please pick another.');return}
+        await ref.set({taken:true});
+        saved=await save('call',{name:o.name,phone:o.phone,topic:o.topic||'',slot:key});
+      }catch(err){saved=false}
+    }
+    $('bt').textContent=label(sel)+' at '+slot+' (Sri Lanka time), for '+o.name+'.';
+    $('bn').textContent=saved?'We’ll confirm by phone.':'Preview only: this booking was not saved because storage isn’t available in this view.';
+    $('bok').style.display='block';this.reset();this.style.display='none';
+    $('bok').scrollIntoView({behavior:'smooth'});
+  };
+  $('jf').onsubmit=async function(e){
+    e.preventDefault();var f=new FormData(this),o={};f.forEach(function(v,k){o[k]=v});
+    var ok=await save('starter',{name:o.name,phone:o.phone,business:o.business});
+    $('jn').textContent=ok?'':'Preview only: this request was not saved because storage isn’t available in this view.';
+    $('jok').style.display='block';this.reset();
+  };
+
+  /* ---------- capabilities ---------- */
+  (async function(){
+    if(!(window.claude&&claude.use))return;
+    try{sample=await claude.use('sample')}catch(e){sample=null}
+    try{db=await claude.use('db')}catch(e){db=null}
+    if(db){
+      try{db.collection('slots').onSnapshot(function(s){taken={};s.docs.forEach(function(d){taken[d.id]=1});renderSlots()},function(){})}catch(e){}
+    }
+    try{
+      var u=await claude.use('user');
+      if(u){try{uid=await u.id()}catch(e){}}
+      if(u&&u.canEdit()&&db){
+        $('dl').style.display='inline';
+        db.collection('requests').onSnapshot(function(s){
+          var box=$('rq'),all=[];box.textContent='';
+          s.docs.forEach(function(d){var it=d.data().items;if(Array.isArray(it))all=all.concat(it)});
+          all.sort(function(a,b){return String(b.created).localeCompare(String(a.created))});
+          if(!all.length){box.textContent='No requests yet.';return}
+          all.slice(0,60).forEach(function(x){
+            var r=document.createElement('div');r.className='req';
+            var h=document.createElement('b');h.textContent=(x.type==='call'?'Call · '+x.slot.replace('_',' ')+' · ':'Starter · ')+(x.name||'');
+            var p=document.createElement('div');p.textContent=[x.phone,x.business,x.topic].filter(Boolean).join(' · ');
+            r.appendChild(h);r.appendChild(p);box.appendChild(r);
+          });
+        },function(){});
+      }
+    }catch(e){}
+  })();
+
+  /* ---------- cookies ---------- */
+  var ck=$('ck');
+  function consent(){var v=null;try{v=localStorage.getItem('curate_consent')}catch(e){}return v}
+  function set(x){try{localStorage.setItem('curate_consent',x)}catch(e){}ck.style.display='none'}
+  if(!consent())ck.style.display='block';
+  $('acc').onclick=function(){set('all')};$('ess').onclick=function(){set('essential')};
+  $('cs').onclick=function(){ck.style.display='block'};
+})();
+</script>
+</body>
+</html>
