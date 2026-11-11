@@ -1,1 +1,6 @@
-export default function Book(){return <main><section className="page"><span className="eyebrow">CURATE AI / Book a call</span><h1 className="page-title">Let&apos;s make<br/>a start.</h1><p className="lead">Pick a day for a 30-minute conversation. All times are Sri Lanka time, Monday to Saturday.</p><div className="calendar" style={{marginTop:60}}><div style={{display:'flex',justifyContent:'space-between'}}><strong>December 2026</strong><span className="eyebrow">Asia/Colombo</span></div><div className="calendar-grid">{['Mo','Tu','We','Th','Fr','Sa','Su'].map(d=><span className="eyebrow" key={d}>{d}</span>)}{Array.from({length:31},(_,i)=><span key={i}>{i+1}</span>)}</div></div><form className="concierge" style={{marginTop:55}}><input aria-label="Your name" placeholder="Your name"/><button>Request a time</button></form></section></main>}
+import { auth } from '@clerk/nextjs/server'
+import { redirect } from 'next/navigation'
+import { BookingForm } from '@/components/customer-forms'
+import { requireProfile } from '@/lib/auth-guards'
+
+export default async function BookPage(){const {userId}=await auth();if(!userId)redirect('/?auth=signup&returnTo=%2Fbook');await requireProfile(userId,'/book');return <main><section className="page crm-page"><span className="eyebrow">CURATE AI / BOOK A CALL</span><h1 className="page-title">Let&apos;s make<br/>a start.</h1><p className="lead">Pick a time for a 30-minute conversation. All times are Sri Lanka time, Monday to Saturday.</p><BookingForm /></section></main>}
