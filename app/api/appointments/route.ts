@@ -62,7 +62,7 @@ export async function POST(request: Request) {
       flushSheetOutbox(userId),
       notifyBooking({ name: profile.fullName, email: profile.email, startsAt, notes: input.data.notes }),
     ])
-    const emailSent = results[1].status === 'fulfilled'
+    const emailSent = results[1].status === 'fulfilled' && results[1].value.customerEmailSent
     return NextResponse.json({ ok: true, id: created.id, emailSent }, { status: 201 })
   } catch {
     return NextResponse.json({ error: 'We could not save your booking request right now. Please try again.' }, { status: 500 })

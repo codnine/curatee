@@ -6,8 +6,8 @@ import { SiteHeader, CookieBanner, SiteFooter } from '@/components/site-chrome'
 import { AuthFlowProvider } from '@/components/auth-flow'
 
 export const metadata: Metadata = {
-  title: 'Curate AI — Intelligent AI chatbot',
-  description: 'An approachable AI chatbot for everyday questions, business ideas, and getting started.',
+  title: 'Curate AI — Branding for small businesses',
+  description: 'Explore branding packages, request a quote, book a consultation, and follow your project progress with Curate AI.',
   icons: { icon: '/mark.svg' },
 }
 

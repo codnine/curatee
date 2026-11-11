@@ -6,6 +6,7 @@ import { profiles, sheetSyncOutbox } from '@/lib/db/schema'
 import { checkFormRateLimit, cleanSourcePage } from '@/lib/forms'
 import { hasSameOrigin, honeypotTriggered } from '@/lib/http'
 import { flushSheetOutbox } from '@/lib/sheets'
+import { notifyRegistration } from '@/lib/email'
 
 const profileInput = z.object({
   fullName: z.string().trim().min(2).max(120),
@@ -55,10 +56,15 @@ export async function POST(request: Request) {
       return Boolean(profile)
     })
 
+    let emailSent = false
     if (created) {
-      try { await flushSheetOutbox(userId) } catch { /* The database outbox retains the registration for the scheduled retry. */ }
+      const results = await Promise.allSettled([
+        flushSheetOutbox(userId),
+        notifyRegistration({ name: input.data.fullName, email, phone: input.data.phone, businessName: input.data.businessName, businessDescription: input.data.businessDescription }),
+      ])
+      emailSent = results[1].status === 'fulfilled' && results[1].value.customerEmailSent
     }
-    return NextResponse.json({ ok: true, created }, { status: created ? 201 : 200 })
+    return NextResponse.json({ ok: true, created, emailSent }, { status: created ? 201 : 200 })
   } catch {
     return NextResponse.json({ error: 'We could not save your registration right now. Please try again.' }, { status: 500 })
   }
