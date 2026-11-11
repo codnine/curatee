@@ -8,6 +8,7 @@ import { db } from '@/lib/db'
 import { appointments, profiles, requestUpdates, requests, sheetSyncOutbox } from '@/lib/db/schema'
 import { isRequestStatus, statusLabels } from '@/lib/forms'
 import { notifyRequestStatus, sendEmail } from '@/lib/email'
+import { packages } from '@/lib/branding'
 import { flushSheetOutbox } from '@/lib/sheets'
 
 const idSchema = z.string().uuid()
@@ -37,7 +38,7 @@ export async function updateRequestStatus(formData: FormData) {
     })
   })
   if (profile) {
-    try { await notifyRequestStatus({ name: profile.fullName, email: profile.email, packageName: item.package, status, note }) } catch { /* Persisted status is authoritative; email failures do not roll it back. */ }
+    try { await notifyRequestStatus({ name: profile.fullName, email: profile.email, packageName: packages[item.package as keyof typeof packages]?.name ?? item.package, requestType: item.details === 'Quote request' ? 'quote' : 'package', status, note }) } catch { /* Persisted status is authoritative; email failures do not roll it back. */ }
   }
   try { await flushSheetOutbox(item.userId) } catch { /* The outbox retries automatically. */ }
   revalidatePath('/desk')

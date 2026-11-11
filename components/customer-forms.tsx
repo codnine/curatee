@@ -14,6 +14,7 @@ export function RequestForm({ packageSlug, packageName, type, sourcePage }: { pa
   const [brief, setBrief] = useState('')
   const [website, setWebsite] = useState('')
   const [done, setDone] = useState(false)
+  const [emailSent, setEmailSent] = useState(false)
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -23,6 +24,7 @@ export function RequestForm({ packageSlug, packageName, type, sourcePage }: { pa
       const response = await fetch('/api/requests', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ package: packageSlug, details: type, brief, sourcePage, website }) })
       const result = await response.json()
       if (!response.ok) throw new Error(result.error ?? 'We could not save this request.')
+      setEmailSent(Boolean(result.emailSent))
       setDone(true)
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'We could not save this request. Please try again.')
@@ -31,7 +33,7 @@ export function RequestForm({ packageSlug, packageName, type, sourcePage }: { pa
     }
   }
 
-  if (done) return <div className="form-success" role="status"><span className="eyebrow">REQUEST RECEIVED</span><h2>We’ll take it from here.</h2><p>Your request is safely saved. Track its status and updates from your account.</p><Link className="button" href="/account">View my account</Link></div>
+  if (done) return <div className="form-success" role="status"><span className="eyebrow">REQUEST RECEIVED</span><h2>We’ll take it from here.</h2><p>{emailSent ? 'Your request is safely saved and a confirmation email has been sent. Track its status and updates from your account.' : 'Your request is safely saved. We could not send the confirmation email right now, but you can track its status and updates from your account.'}</p><Link className="button" href="/account">View my account</Link></div>
   return <form className="crm-form wide-form" onSubmit={submit}>
     <div className="request-summary"><span className="eyebrow">{type === 'quote' ? 'QUOTE REQUEST' : 'PACKAGE REQUEST'}</span><strong>{packageName}</strong><span className="request-summary-note">Your details are linked to your registered account.</span></div>
     <label className="crm-field"><span>{type === 'quote' ? 'What would you like a quote for?' : 'Tell us what you need'}</span><textarea className="crm-input crm-textarea" rows={7} minLength={10} maxLength={3000} required value={brief} onChange={(event) => setBrief(event.target.value)} placeholder="A few details about your business, goals, or the project would help us get started." /></label>

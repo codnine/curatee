@@ -7,6 +7,7 @@ import { profiles, requestUpdates, requests, sheetSyncOutbox } from '@/lib/db/sc
 import { checkFormRateLimit, cleanSourcePage } from '@/lib/forms'
 import { hasSameOrigin, honeypotTriggered } from '@/lib/http'
 import { flushSheetOutbox } from '@/lib/sheets'
+import { notifyRequestReceived } from '@/lib/email'
 import { packages } from '@/lib/branding'
 
 const requestInput = z.object({
@@ -52,8 +53,12 @@ export async function POST(request: Request) {
       return [item]
     })
 
-    try { await flushSheetOutbox(userId) } catch { /* The database outbox retains the request for scheduled retry. */ }
-    return NextResponse.json({ ok: true, id: created.id }, { status: 201 })
+    const results = await Promise.allSettled([
+      flushSheetOutbox(userId),
+      notifyRequestReceived({ name: profile.fullName, email: profile.email, phone: profile.phone, businessName: profile.businessName, packageName, requestType: input.data.details, brief: input.data.brief, requestId: created.id, sourcePage }),
+    ])
+    const emailSent = results[1].status === 'fulfilled' && results[1].value.customerEmailSent
+    return NextResponse.json({ ok: true, id: created.id, emailSent }, { status: 201 })
   } catch {
     return NextResponse.json({ error: 'We could not save your request right now. Please try again.' }, { status: 500 })
   }
