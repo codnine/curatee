@@ -6,12 +6,12 @@ import { SiteHeader, CookieBanner, SiteFooter } from '@/components/site-chrome'
 import { AuthFlowProvider } from '@/components/auth-flow'
 
 export const metadata: Metadata = {
-  title: 'Curate AI — Branding for small businesses',
-  description: 'Explore branding packages, request a quote, book a consultation, and follow your project progress with Curate AI.',
+  title: 'Curate AI — Something great is curating',
+  description: 'A new chapter is taking shape. Curate AI will be back soon.',
   icons: { icon: '/mark.svg' },
 }
 
-export const viewport: Viewport = { themeColor: '#0b0b0b', width: 'device-width', initialScale: 1 }
+export const viewport: Viewport = { themeColor: '#000000', width: 'device-width', initialScale: 1 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <ClerkProvider><html lang="en"><body><AuthFlowProvider><SiteHeader />{children}<SiteFooter /><CookieBanner /></AuthFlowProvider></body></html></ClerkProvider>
